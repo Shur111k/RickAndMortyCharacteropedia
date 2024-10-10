@@ -1,0 +1,25 @@
+:root {
+  --gap-size: 2.5rem; 
+  --padding-size: 2.5rem;
+  --background-color: #1a242b;
+}
+
+.characterList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-size);
+  padding: var(--padding-size);
+  background-color: var(--background-color);
+}
+
+@media (max-width: 64rem) { 
+  .characterList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 48rem) { 
+  .characterList {
+    grid-template-columns: 1fr;
+  }
+}
