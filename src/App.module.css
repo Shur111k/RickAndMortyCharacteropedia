@@ -1,0 +1,15 @@
+:root {
+  --primary-color: #2c3e50;
+  --padding-size: 1.25rem;
+}
+
+.app {
+  text-align: center;
+  padding: var(--padding-size);
+}
+
+.title {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: var(--padding-size);
+}

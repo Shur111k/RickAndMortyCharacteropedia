@@ -1,35 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import axios from "axios";
+import CharacterList from "./components/CharacterList";
+import "./App.module.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [characters, setCharacters] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
+  const fetchCharacters = async (page = 1) => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `https://rickandmortyapi.com/api/character?page=${page}`
+      );
+
+      setCharacters((prevCharacters) => {
+        const newCharacters = response.data.results.filter(
+          (character) =>
+            !prevCharacters.some((prev) => prev.id === character.id)
+        );
+        return [...prevCharacters, ...newCharacters];
+      });
+
+      setHasMore(response.data.info.next !== null);
+      setIsLoading(false);
+    } catch (err) {
+      setError(err);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCharacters(currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+          document.documentElement.offsetHeight - 100 &&
+        hasMore &&
+        !isLoading
+      ) {
+        setCurrentPage((prevPage) => prevPage + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore, isLoading]);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>FUCK YOU</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="app">
+      {error && <p>Error loading characters: {error.message}</p>}
+      <CharacterList characters={characters} />
+      {isLoading && <p>Loading...</p>}
+    </div>
+  );
 }
 
-export default App
+export default App;
