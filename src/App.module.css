@@ -1,7 +1,4 @@
-:root {
-  --primary-color: #2c3e50;
-  --padding-size: 1.25rem;
-}
+@import '../public/variables.css';
 
 .app {
   text-align: center;

@@ -1,9 +1,3 @@
-:root {
-  --gap-size: 2.5rem; 
-  --padding-size: 2.5rem;
-  --background-color: #1a242b;
-}
-
 .characterList {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -12,13 +6,13 @@
   background-color: var(--background-color);
 }
 
-@media (max-width: 64rem) { 
+@media (max-width: 1024px) {
   .characterList {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 48rem) { 
+@media (max-width: 768px) {
   .characterList {
     grid-template-columns: 1fr;
   }

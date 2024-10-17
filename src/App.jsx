@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect, useRef } from "react";
 import CharacterList from "./components/CharacterList";
+import Filter from "./components/Filter";
+import api from "./axiosInstance";
 import "./App.module.css";
 
 function App() {
@@ -9,18 +10,32 @@ function App() {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [filters, setFilters] = useState({
+    name: "",
+    status: "None",
+    gender: "None",
+  });
 
-  const fetchCharacters = async (page = 1) => {
+  const observer = useRef(); 
+
+  const lastCharacterElementRef = useRef(null); 
+
+  const fetchCharacters = async (page = 1, newFilters = filters) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(
-        `https://rickandmortyapi.com/api/character?page=${page}`
-      );
+      const filterParams = {
+        page,
+        ...(newFilters.name && { name: newFilters.name }),
+        ...(newFilters.status !== "None" && { status: newFilters.status }),
+        ...(newFilters.gender !== "None" && { gender: newFilters.gender }),
+      };
+
+      const response = await api.get("/", { params: filterParams });
 
       setCharacters((prevCharacters) => {
+        if (page === 1) return response.data.results;
         const newCharacters = response.data.results.filter(
-          (character) =>
-            !prevCharacters.some((prev) => prev.id === character.id)
+          (character) => !prevCharacters.some((prev) => prev.id === character.id)
         );
         return [...prevCharacters, ...newCharacters];
       });
@@ -38,26 +53,46 @@ function App() {
   }, [currentPage]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >=
-          document.documentElement.offsetHeight - 100 &&
-        hasMore &&
-        !isLoading
-      ) {
+    if (isLoading || !hasMore) return; 
+
+    const observerCallback = (entries) => {
+      if (entries[0].isIntersecting) {
         setCurrentPage((prevPage) => prevPage + 1);
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore, isLoading]);
+    const options = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 1.0,
+    };
+
+    observer.current = new IntersectionObserver(observerCallback, options);
+
+    if (lastCharacterElementRef.current) {
+      observer.current.observe(lastCharacterElementRef.current); 
+    }
+
+    return () => {
+      if (observer.current && lastCharacterElementRef.current) {
+        observer.current.unobserve(lastCharacterElementRef.current); 
+      }
+    };
+  }, [isLoading, hasMore]);
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+    setCurrentPage(1); 
+    fetchCharacters(1, newFilters);
+  };
 
   return (
     <div className="app">
       {error && <p>Error loading characters: {error.message}</p>}
+      <Filter onFilterChange={handleFilterChange} />
       <CharacterList characters={characters} />
       {isLoading && <p>Loading...</p>}
+      <div ref={lastCharacterElementRef}></div>
     </div>
   );
 }

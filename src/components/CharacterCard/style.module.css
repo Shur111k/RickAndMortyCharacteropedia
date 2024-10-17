@@ -1,13 +1,3 @@
-:root {
-  --card-bg-color: #2a3a45;
-  --text-color: white;
-  --link-color: #00bcd4;
-  --hover-link-color: #00bcd4;
-  --location-episode-color: #fff;
-  --details-color: #ffffff;
-  --shadow-color: rgba(0, 0, 0, 0.1);
-}
-
 .card {
   display: flex;
   align-items: flex-start;
