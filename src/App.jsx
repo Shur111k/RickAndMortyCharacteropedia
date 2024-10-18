@@ -16,9 +16,9 @@ function App() {
     gender: "None",
   });
 
-  const observer = useRef(); 
+  const observer = useRef();
 
-  const lastCharacterElementRef = useRef(null); 
+  const lastCharacterElementRef = useRef(null);
 
   const fetchCharacters = async (page = 1, newFilters = filters) => {
     setIsLoading(true);
@@ -29,31 +29,31 @@ function App() {
         ...(newFilters.status !== "None" && { status: newFilters.status }),
         ...(newFilters.gender !== "None" && { gender: newFilters.gender }),
       };
-
-      const response = await api.get("/", { params: filterParams });
-
+  
+      const { data } = await api.get("/", { params: filterParams });
+  
       setCharacters((prevCharacters) => {
-        if (page === 1) return response.data.results;
-        const newCharacters = response.data.results.filter(
+        if (page === 1) return data.results;
+        const newCharacters = data.results.filter(
           (character) => !prevCharacters.some((prev) => prev.id === character.id)
         );
         return [...prevCharacters, ...newCharacters];
       });
-
-      setHasMore(response.data.info.next !== null);
-      setIsLoading(false);
+      setHasMore(data.info.next !== null);
     } catch (err) {
       setError(err);
+    } finally {
       setIsLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchCharacters(currentPage);
   }, [currentPage]);
 
   useEffect(() => {
-    if (isLoading || !hasMore) return; 
+    if (isLoading || !hasMore) return;
 
     const observerCallback = (entries) => {
       if (entries[0].isIntersecting) {
@@ -70,19 +70,19 @@ function App() {
     observer.current = new IntersectionObserver(observerCallback, options);
 
     if (lastCharacterElementRef.current) {
-      observer.current.observe(lastCharacterElementRef.current); 
+      observer.current.observe(lastCharacterElementRef.current);
     }
 
     return () => {
       if (observer.current && lastCharacterElementRef.current) {
-        observer.current.unobserve(lastCharacterElementRef.current); 
+        observer.current.unobserve(lastCharacterElementRef.current);
       }
     };
   }, [isLoading, hasMore]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
-    setCurrentPage(1); 
+    setCurrentPage(1);
     fetchCharacters(1, newFilters);
   };
 
@@ -92,6 +92,7 @@ function App() {
       <Filter onFilterChange={handleFilterChange} />
       <CharacterList characters={characters} />
       {isLoading && <p>Loading...</p>}
+      {}
       <div ref={lastCharacterElementRef}></div>
     </div>
   );

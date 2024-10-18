@@ -23,7 +23,7 @@ export default [
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
     },
-    "env": {
+    env: {
         "browser": true,
         "node": true
       },
