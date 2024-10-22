@@ -1,0 +1,12 @@
+@import '../public/variables.css';
+
+.app {
+  text-align: center;
+  padding: var(--padding-size);
+}
+
+.title {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: var(--padding-size);
+}
