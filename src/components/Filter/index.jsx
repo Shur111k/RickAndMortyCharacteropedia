@@ -7,12 +7,8 @@ import SelectOptions from "../SelectOptions"
 const statusOptions = ["None", "Alive", "Dead", "unknown"];
 const genderOptions = ["None", "Male", "Female", "unknown"];
 
-const Filter = ({ onFilterChange }) => {
-  const [filters, setFilters] = useState({
-    name: "",
-    status: "None",
-    gender: "None",
-  });
+const Filter = ({ onFilterChange, initialFilters }) => {
+  const [filters, setFilters] = useState(initialFilters);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,13 +24,13 @@ const Filter = ({ onFilterChange }) => {
   };
 
   const handleClearFilters = () => {
-    const resetFilters = {
+    const defaultFilters = {
       name: "",
       status: "None",
       gender: "None",
     };
-    setFilters(resetFilters);
-    onFilterChange(resetFilters);
+    setFilters(defaultFilters);
+    onFilterChange(defaultFilters);
   };
 
   return (
@@ -84,6 +80,19 @@ const Filter = ({ onFilterChange }) => {
 
 Filter.propTypes = {
   onFilterChange: PropTypes.func.isRequired,
+  initialFilters: PropTypes.shape({
+    name: PropTypes.string,
+    status: PropTypes.string,
+    gender: PropTypes.string,
+  }),
+};
+
+Filter.defaultProps = {
+  initialFilters: {
+    name: "",
+    status: "None",
+    gender: "None",
+  },
 };
 
 export default Filter;

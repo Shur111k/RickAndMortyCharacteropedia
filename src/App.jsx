@@ -5,7 +5,10 @@ import api from "./axiosInstance";
 import "./App.module.css";
 
 function App() {
-  const [characters, setCharacters] = useState([]);
+  const [charactersData, setCharactersData] = useState({
+    characters: [],
+    info: { next: null },
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,15 +32,27 @@ function App() {
         ...(newFilters.status !== "None" && { status: newFilters.status }),
         ...(newFilters.gender !== "None" && { gender: newFilters.gender }),
       };
-  
+
       const { data } = await api.get("/", { params: filterParams });
-  
-      setCharacters((prevCharacters) => {
-        if (page === 1) return data.results;
-        const newCharacters = data.results.filter(
-          (character) => !prevCharacters.some((prev) => prev.id === character.id)
-        );
-        return [...prevCharacters, ...newCharacters];
+
+      setCharactersData((prevData) => {
+        const newCharacters =
+          page === 1
+            ? data.results
+            : [
+                ...prevData.characters,
+                ...data.results.filter(
+                  (character) =>
+                    !prevData.characters.some(
+                      (prev) => prev.id === character.id
+                    )
+                ),
+              ];
+
+        return {
+          characters: newCharacters,
+          info: data.info,
+        };
       });
       setHasMore(data.info.next !== null);
     } catch (err) {
@@ -46,7 +61,6 @@ function App() {
       setIsLoading(false);
     }
   };
-  
 
   useEffect(() => {
     fetchCharacters(currentPage);
@@ -90,9 +104,8 @@ function App() {
     <div className="app">
       {error && <p>Error loading characters: {error.message}</p>}
       <Filter onFilterChange={handleFilterChange} />
-      <CharacterList characters={characters} />
+      <CharacterList characters={charactersData.characters} />
       {isLoading && <p>Loading...</p>}
-      {}
       <div ref={lastCharacterElementRef}></div>
     </div>
   );
