@@ -6,6 +6,11 @@ import SelectOptions from "../SelectOptions"
 
 const statusOptions = ["None", "Alive", "Dead", "unknown"];
 const genderOptions = ["None", "Male", "Female", "unknown"];
+const defaultFilters = {
+  name: "",
+  status: "None",
+  gender: "None",
+};
 
 const Filter = ({ onFilterChange, initialFilters }) => {
   const [filters, setFilters] = useState(initialFilters);
@@ -24,11 +29,6 @@ const Filter = ({ onFilterChange, initialFilters }) => {
   };
 
   const handleClearFilters = () => {
-    const defaultFilters = {
-      name: "",
-      status: "None",
-      gender: "None",
-    };
     setFilters(defaultFilters);
     onFilterChange(defaultFilters);
   };

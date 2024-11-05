@@ -9,7 +9,7 @@
   color: var(--text-color);
   font-family: "Arial", sans-serif;
   transition: transform 0.3s;
-  max-width: 37.5rem; 
+  width: 36rem; 
   height: 15rem; 
 }
 

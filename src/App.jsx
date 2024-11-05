@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import CharacterList from "./components/CharacterList";
 import Filter from "./components/Filter";
 import api from "./axiosInstance";
@@ -12,7 +12,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [filters, setFilters] = useState({
     name: "",
     status: "None",
@@ -20,7 +19,6 @@ function App() {
   });
 
   const observer = useRef();
-
   const lastCharacterElementRef = useRef(null);
 
   const fetchCharacters = async (page = 1, newFilters = filters) => {
@@ -54,7 +52,6 @@ function App() {
           info: data.info,
         };
       });
-      setHasMore(data.info.next !== null);
     } catch (err) {
       setError(err);
     } finally {
@@ -62,37 +59,42 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    fetchCharacters(currentPage);
-  }, [currentPage]);
+  const handleNextPage = useCallback(
+    (entries) => {
+      if (isLoading || !charactersData.info.next) return;
 
-  useEffect(() => {
-    if (isLoading || !hasMore) return;
-
-    const observerCallback = (entries) => {
       if (entries[0].isIntersecting) {
         setCurrentPage((prevPage) => prevPage + 1);
       }
-    };
+    },
+    [isLoading, charactersData.info.next]
+  );
 
-    const options = {
+  const setupObserver = () => {
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver(handleNextPage, {
       root: null,
       rootMargin: "0px",
       threshold: 1.0,
-    };
-
-    observer.current = new IntersectionObserver(observerCallback, options);
+    });
 
     if (lastCharacterElementRef.current) {
       observer.current.observe(lastCharacterElementRef.current);
     }
+  };
+
+  useEffect(() => {
+    setupObserver();
 
     return () => {
-      if (observer.current && lastCharacterElementRef.current) {
-        observer.current.unobserve(lastCharacterElementRef.current);
-      }
+      if (observer.current) observer.current.disconnect();
     };
-  }, [isLoading, hasMore]);
+  }, [charactersData.info.next]);
+
+  useEffect(() => {
+    fetchCharacters(currentPage);
+  }, [currentPage]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
