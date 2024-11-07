@@ -93,13 +93,13 @@ function App() {
   }, [charactersData.info.next]);
 
   useEffect(() => {
-    fetchCharacters(currentPage);
-  }, [currentPage]);
+    fetchCharacters(currentPage, filters);
+  }, [currentPage, filters]);
+  
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
     setCurrentPage(1);
-    fetchCharacters(1, newFilters);
   };
 
   return (

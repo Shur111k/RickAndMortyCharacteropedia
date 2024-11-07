@@ -16,5 +16,6 @@
 @media (max-width: 1300px) {
   .characterList {
     grid-template-columns: 1fr;
+    padding: 1rem;
   }
 }
