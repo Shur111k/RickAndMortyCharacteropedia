@@ -108,9 +108,10 @@ function App() {
       <Filter onFilterChange={handleFilterChange} />
       <CharacterList characters={charactersData.characters} />
       {isLoading && <p>Loading...</p>}
-      <div ref={lastCharacterElementRef}></div>
+      {!isLoading && <div ref={lastCharacterElementRef}></div>}
     </div>
-  );
+  );  
 }
 
 export default App;
+
