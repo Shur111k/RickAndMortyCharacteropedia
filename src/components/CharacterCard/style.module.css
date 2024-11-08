@@ -1,0 +1,72 @@
+.card {
+  display: flex;
+  align-items: flex-start;
+  background-color: var(--card-bg-color);
+  border-radius: 0.5rem; 
+  box-shadow: 0 0.25rem 0.5rem var(--shadow-color); 
+  overflow: hidden;
+  text-align: left;
+  color: var(--text-color);
+  font-family: "Arial", sans-serif;
+  transition: transform 0.3s;
+  width: 36rem; 
+  height: 15rem; 
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.image {
+  width: auto;
+  height: 15rem; 
+  margin-right: 1.25rem; 
+}
+
+.info {
+  flex-grow: 1;
+  margin-top: 1.875rem; 
+}
+
+.name {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  margin-bottom: 1.25rem; 
+}
+
+.details {
+  font-size: 1rem;
+  color: var(--details-color);
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.location,
+.episode {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: var(--location-episode-color);
+  font-weight: bold;
+  margin: 0.625rem 0px; 
+}
+
+.episode a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.episode a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .card {
+    flex-direction: column;
+    align-items: center;
+    width: auto;
+    height: auto;
+    padding: 1rem;
+  }
+}
+

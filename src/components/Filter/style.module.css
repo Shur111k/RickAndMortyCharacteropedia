@@ -1,0 +1,83 @@
+.filterContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--header-color);
+}
+
+.filterWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 1.875rem;
+  align-items: center;
+  padding: 1.25rem;
+  border-radius: 0.625rem;
+  background-color: var(--header-color);
+}
+
+.imageContainer img {
+  max-width: auto;
+  max-height: auto;
+}
+
+.filterForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filterForm label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filterForm input,
+.filterForm select {
+  margin-left: 1rem;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  width: 16rem;
+  box-sizing: border-box;
+}
+
+.filterForm button {
+  padding: 0.625rem;
+  background-color: var(--link-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 0.3125rem;
+  cursor: pointer;
+  width: 9.375rem;
+  margin: 0 auto;
+}
+
+.filterForm button:hover {
+  background-color: var(--button-color);
+}
+
+@media (max-width: 1600px) {
+  .imageContainer img {
+    max-width: 80%;
+    max-height: 80%;
+  }
+  .imageContainer{
+    max-width: 80%;
+    max-height: 80%;
+  }
+}
+
+@media (max-width: 768px) {
+  .imageContainer img {
+    max-width: 70%;
+    max-width: 80%;
+  }
+  .imageContainer {
+    display: flex;
+    justify-content: center;
+  }
+  .filterWrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+}
